@@ -1,6 +1,5 @@
 package juego;
 
-
 import java.awt.Color;
 
 import entorno.Entorno;
@@ -13,6 +12,7 @@ public class Juego extends InterfaceJuego
 	
 	// Variables y métodos propios de cada grupo
 	// ...
+	Gondolf mago = new Gondolf(400,300); // Se crea el objeto mago con posicion definida en el centro
 	Juego()
 	{
 		// Inicializa el objeto entorno
@@ -35,6 +35,8 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
+		mago.dibujar(entorno); // Se dibuja al mago en la pantalla
+		mago.mover(entorno); // Metodo para mover al mago
 	} 
 	
 
