@@ -88,13 +88,21 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
-		
-		// Verifica que el mago este vivo
+		// Verifica el tiempo en milisegundos por cada tick
+				int tiempoActual = entorno.tiempo();
+				
+		// Verifica si se han eliminado a todos los murcielagos, si es asi muestra un mensaje de victoria
+		if (enemigosEliminados >= maxGenerados) {
+			juegoTerminado = true;
+			entorno.cambiarFont("Arial", 36, java.awt.Color.BLUE);
+	        entorno.escribirTexto("¡Has ganado!", 300, 300);
+		}
+		// Verifica que el mago este vivo y si no lo esta muesta un mensaje de derrota
 		if (mago.getVida()<=0) {
 		    juegoTerminado = true;
+		    entorno.cambiarFont("Arial", 36, java.awt.Color.RED);
+	        entorno.escribirTexto("¡Has perdido!", 300, 300);
 		}
-		// Verifica el tiempo en milisegundos por cada tick
-		int tiempoActual = entorno.tiempo();
 		
 		// Si el mago esta vivo continua el juego
 		if (!juegoTerminado) {
@@ -128,14 +136,31 @@ public class Juego extends InterfaceJuego
 			            for (int i = 0; i < hechizos.length; i++) {
 			                if (hechizos[i] == null) {
 			                    // Crear nuevo hechizo en la posición del clic
-			                    hechizos[i] = new Hechizo(
-			                        entorno.mouseX(),
-			                        entorno.mouseY(),
-			                        30, // radio del hechizo (Personalizable)
-			                        boton.getCostoMagia(),
-			                        Color.ORANGE,
-			                        entorno.tiempo()
-			                    );
+			                	
+			                	// Si el boton seleccionado es Hechizo 1
+			                	if (seleccionado == 0) {
+				                    hechizos[i] = new Hechizo(
+				                        entorno.mouseX(),
+				                        entorno.mouseY(),
+				                        20, // radio del hechizo (Personalizable)
+				                        boton.getCostoMagia(),
+				                        Color.ORANGE,
+				                        entorno.tiempo(),
+				                        200 // Duracion del hechizo (Personalizable)
+				                    	);
+			                	}
+			                	// Si el boton seleccionado es Hechizo 2
+			                	else {
+			                		hechizos[i] = new Hechizo(
+					                        entorno.mouseX(),
+					                        entorno.mouseY(),
+					                        40, // radio del hechizo (Personalizable)
+					                        boton.getCostoMagia(),
+					                        Color.MAGENTA,
+					                        entorno.tiempo(),
+					                        400 // Duracion del hechizo (Personalizable)
+					                    	);
+			                	}
 			                    // Gastar magia
 			                    mago.lanzarHechizo(boton.getCostoMagia());
 			                    menu.deseleccionar(); // quitar selección
@@ -192,12 +217,6 @@ public class Juego extends InterfaceJuego
 			    }
 			}
 		}
-		// Si el mago muerte muestra el siguiente mensaje en pantalla
-		else {
-	        entorno.cambiarFont("Arial", 36, java.awt.Color.RED);
-	        entorno.escribirTexto("¡Has perdido!", 300, 300);
-	    }
-
 	} 
 	
 

@@ -12,14 +12,14 @@ public class Hechizo {
     private int duracion; // duración en milisegundos
     private int tickInicial;
     
-    public Hechizo(double x, double y, double radio, int costoMagia, Color color, int tickInicial) {
+    public Hechizo(double x, double y, double radio, int costoMagia, Color color, int tickInicial, int duracion) {
         this.x = x;
         this.y = y;
         this.radio = radio;
         this.costoMagia = costoMagia;
         this.color = color;
-        this.duracion = 200; // el hechizo dura 300 ms (puede ajustarse)
         this.tickInicial = tickInicial;
+        this.duracion = duracion;
     }
     
     // Dibuja un cirulo que representa al hechizo
