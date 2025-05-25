@@ -34,7 +34,8 @@ public class Juego extends InterfaceJuego
 	        x = 620; // justo antes del menú
 	        y = Math.random() * altoPantalla;
 	    }
-	    return new double[]{x, y};
+	    double[] posicion = {x, y};
+	    return posicion;
 	}
 
 	// Variables de murcielagos
@@ -56,7 +57,9 @@ public class Juego extends InterfaceJuego
 	
 	
 	// Variable de mago
-	Gondolf mago = new Gondolf(anchoPantalla/2,altoPantalla/2); // Se crea el objeto mago con posicion definida en el centro
+	int magiaInicial = 100;
+	int vidaInicial = 100;
+	Gondolf mago = new Gondolf(anchoPantalla/2,altoPantalla/2, magiaInicial, vidaInicial); // Se crea el objeto mago con posicion definida en el centro
 	
 	// Variables de menu
 	Menu menu = new Menu(600, 200, altoPantalla);
@@ -176,6 +179,9 @@ public class Juego extends InterfaceJuego
 			            if (m != null && m.getVivo() && h.afectaA(m)) {
 			                enemigos[j] = null;
 			                enemigosEliminados++;
+			                if(mago.getMagia() < magiaInicial) { // Se verifica que la magia no sea mayor que la maxima
+			                	mago.incrementaMagia((int)(magiaInicial*0.1)); // Se incrementa un 10% por murcielago eliminado
+			                }
 			            }
 			        }
 

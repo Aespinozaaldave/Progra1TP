@@ -11,12 +11,12 @@ public class Gondolf {
 	private double ancho;
 	private double alto;
 	
-	public Gondolf(double xInicial, double yInicial) {
+	public Gondolf(double xInicial, double yInicial, int magiaInicial, int vidaInicial) {
 		 this.x = xInicial;
 		 this.y = yInicial;
 		 this.velocidad = 5.0;
-		 this.magia = 100;
-		 this.vida = 100;
+		 this.magia = magiaInicial;
+		 this.vida = vidaInicial;
 		 this.ancho = 16;
 		 this.alto = 30;
 	 }
@@ -64,6 +64,10 @@ public class Gondolf {
 		if (tieneMagiaSuficiente(cantidad)) {
 			magia -= cantidad;
 		}
+	}
+	// Incrementa magia
+	public void incrementaMagia(int cantidad) {
+		magia += cantidad;
 	}
 	// Getters
     public double getX() { return x; }
