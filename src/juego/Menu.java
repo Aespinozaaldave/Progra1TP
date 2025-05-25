@@ -19,8 +19,8 @@ public class Menu {
         int centroX = x + ancho / 2; // x es la posición de inicio del menú
 
         // Creamos dos botones de ejemplo
-        botones[0] = new BotonHechizo("Hechizo 0", centroX, 150, Color.CYAN, 0); // gratis
-        botones[1] = new BotonHechizo("Hechizo 1", centroX, 220, Color.MAGENTA, 20); // cuesta 20 magia
+        botones[0] = new BotonHechizo("Hechizo 1", centroX, 150, Color.CYAN, 0); // gratis
+        botones[1] = new BotonHechizo("Hechizo 2", centroX, 220, Color.MAGENTA, 20); // cuesta 20 magia
 
         hechizoSeleccionado = -1; // ninguno seleccionado
     }

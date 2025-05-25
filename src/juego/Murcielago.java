@@ -17,7 +17,7 @@ public class Murcielago {
 		this.x = xInicial;
 		this.y = yInicial;
 		this.velocidad = velocidad;
-		this.tamanio = 10;
+		this.tamanio = 15;
 		this.vivo = true;
 	}
 	
@@ -55,4 +55,5 @@ public class Murcielago {
     public boolean getVivo() { return vivo; }
     public double getX() { return x; }
     public double getY() { return y; }
+    public double getRadio() {return tamanio / 2;}
 }

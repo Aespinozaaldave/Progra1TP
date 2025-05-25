@@ -1,5 +1,7 @@
 package juego;
 
+
+
 import java.awt.Color;
 
 import entorno.Entorno;
@@ -42,6 +44,9 @@ public class Juego extends InterfaceJuego
 	private Murcielago[] enemigos = new Murcielago[10];
 	private int tiempoUltimoMurcielago = 0;
 	private int intervalo = 1000;
+	
+	// Variables de hechizos
+	private Hechizo[] hechizos = new Hechizo[10]; // máximo 10 hechizos activos al mismo tiempo
 	
 	
 	//Variables de juego
@@ -107,6 +112,36 @@ public class Juego extends InterfaceJuego
 			        }
 			    }
 			}
+			
+			// Si se hizo clic con el mouse y el clic no está en el menú
+			if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && !menu.mouseEstaEnMenu(entorno.mouseX())) {
+			    int seleccionado = menu.getHechizoSeleccionado();
+			    if (seleccionado != -1) {
+			        BotonHechizo boton = menu.getBoton(seleccionado);
+
+			        // Verificamos si Gondolf tiene magia suficiente
+			        if (mago.tieneMagiaSuficiente(boton.getCostoMagia())) {
+			            // Buscar espacio libre en el arreglo de hechizos
+			            for (int i = 0; i < hechizos.length; i++) {
+			                if (hechizos[i] == null) {
+			                    // Crear nuevo hechizo en la posición del clic
+			                    hechizos[i] = new Hechizo(
+			                        entorno.mouseX(),
+			                        entorno.mouseY(),
+			                        30, // radio del hechizo (Personalizable)
+			                        boton.getCostoMagia(),
+			                        Color.ORANGE,
+			                        entorno.tiempo()
+			                    );
+			                    // Gastar magia
+			                    mago.lanzarHechizo(boton.getCostoMagia());
+			                    menu.deseleccionar(); // quitar selección
+			                    break;
+			                }
+			            }
+			        }
+			    }
+			}
 		
 			for (int i = 0; i < enemigos.length; i++) {
 		        Murcielago m = enemigos[i];
@@ -129,6 +164,27 @@ public class Juego extends InterfaceJuego
 		            }
 		        }
 		    }
+			
+			for (int i = 0; i < hechizos.length; i++) {
+			    Hechizo h = hechizos[i];
+			    if (h != null) {
+			        h.dibujar(entorno);
+
+			        // Elimina murciélagos si están en el área de efecto
+			        for (int j = 0; j < enemigos.length; j++) {
+			            Murcielago m = enemigos[j];
+			            if (m != null && m.getVivo() && h.afectaA(m)) {
+			                enemigos[j] = null;
+			                enemigosEliminados++;
+			            }
+			        }
+
+			        // Eliminar el hechizo si ya expiró
+			        if (!h.estaActivo(entorno.tiempo())) {
+			            hechizos[i] = null;
+			        }
+			    }
+			}
 		}
 		// Si el mago muerte muestra el siguiente mensaje en pantalla
 		else {

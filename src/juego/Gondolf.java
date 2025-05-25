@@ -70,5 +70,7 @@ public class Gondolf {
     public double getY() { return y; }
     public int getVida() { return vida; }
     public int getMagia() { return magia; }
+    public double getAncho() { return ancho; }
+    public double getAlto() { return alto; }
 
 }
