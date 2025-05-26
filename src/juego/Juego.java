@@ -55,6 +55,9 @@ public class Juego extends InterfaceJuego
 	int anchoPantalla = 800;
 	int altoPantalla = 600;
 	
+	// Variables de roca
+	private Roca[] rocas = new Roca[5]; // cantidad de rocas que querés en el escenario
+	
 	
 	// Variable de mago
 	int magiaInicial = 100;
@@ -73,7 +76,12 @@ public class Juego extends InterfaceJuego
 		
 		// Inicializar lo que haga falta para el juego
 		// ...
-
+		// Creamos algunas rocas con posiciones y tamaños fijos
+		rocas[0] = new Roca(200, 300);
+		rocas[1] = new Roca(400, 150);
+		rocas[2] = new Roca(300, 500);
+		rocas[3] = new Roca(100, 200);
+		rocas[4] = new Roca(500, 300);
 		// Inicia el juego!
 		this.entorno.iniciar();
 	}
@@ -89,7 +97,7 @@ public class Juego extends InterfaceJuego
 		// Procesamiento de un instante de tiempo
 		// ...
 		// Verifica el tiempo en milisegundos por cada tick
-				int tiempoActual = entorno.tiempo();
+		int tiempoActual = entorno.tiempo();
 				
 		// Verifica si se han eliminado a todos los murcielagos, si es asi muestra un mensaje de victoria
 		if (enemigosEliminados >= maxGenerados) {
@@ -109,7 +117,14 @@ public class Juego extends InterfaceJuego
 			menu.actualizarSeleccion(entorno);
 			menu.dibujar(entorno, mago.getVida(), mago.getMagia(), enemigosEliminados);
 			mago.dibujar(entorno); // Se dibuja al mago en la pantalla
-			mago.mover(entorno); // Metodo para mover al mago
+			mago.mover(entorno, rocas); // Metodo para mover al mago
+			
+			// Dibujamos las rocas en pantalla
+			for (int i = 0; i < rocas.length; i++) {
+			    if (rocas[i] != null) {
+			        rocas[i].dibujar(entorno);
+			    }
+			}
 		
 			// Generador de murcielagos cuando en pantalla 10 o menos murcielagos y menos de 50 en total
 			if (tiempoActual - tiempoUltimoMurcielago >= intervalo && totalGenerados < maxGenerados) {
@@ -140,18 +155,22 @@ public class Juego extends InterfaceJuego
 			                	// Si el boton seleccionado es Hechizo 1
 			                	if (seleccionado == 0) {
 				                    hechizos[i] = new Hechizo(
+				                        mago.getX(),
+				                        mago.getY(),
 				                        entorno.mouseX(),
 				                        entorno.mouseY(),
 				                        20, // radio del hechizo (Personalizable)
 				                        boton.getCostoMagia(),
-				                        Color.ORANGE,
+				                        Color.CYAN,
 				                        entorno.tiempo(),
-				                        200 // Duracion del hechizo (Personalizable)
+				                        500 // Duracion del hechizo (Personalizable)
 				                    	);
 			                	}
 			                	// Si el boton seleccionado es Hechizo 2
-			                	else {
+			                	else if (seleccionado == 1) {
 			                		hechizos[i] = new Hechizo(
+					                        entorno.mouseX(),
+					                        entorno.mouseY(),
 					                        entorno.mouseX(),
 					                        entorno.mouseY(),
 					                        40, // radio del hechizo (Personalizable)
@@ -159,6 +178,19 @@ public class Juego extends InterfaceJuego
 					                        Color.MAGENTA,
 					                        entorno.tiempo(),
 					                        400 // Duracion del hechizo (Personalizable)
+					                    	);
+			                	}
+			                	else if (seleccionado == 2) {
+			                		hechizos[i] = new Hechizo(
+					                        entorno.mouseX(),
+					                        entorno.mouseY(),
+					                        entorno.mouseX(),
+					                        entorno.mouseY(),
+					                        60, // radio del hechizo (Personalizable)
+					                        boton.getCostoMagia(),
+					                        Color.DARK_GRAY,
+					                        entorno.tiempo(),
+					                        300 // Duracion del hechizo (Personalizable)
 					                    	);
 			                	}
 			                    // Gastar magia
@@ -195,9 +227,14 @@ public class Juego extends InterfaceJuego
 			
 			for (int i = 0; i < hechizos.length; i++) {
 			    Hechizo h = hechizos[i];
+			    
+			    
 			    if (h != null) {
+			    	if (!h.estaDentroDePantalla(600, altoPantalla)) {
+				        hechizos[i] = null;
+				    }
 			        h.dibujar(entorno);
-
+			        h.mover();
 			        // Elimina murciélagos si están en el área de efecto
 			        for (int j = 0; j < enemigos.length; j++) {
 			            Murcielago m = enemigos[j];
@@ -218,6 +255,8 @@ public class Juego extends InterfaceJuego
 			}
 		}
 	} 
+	
+
 	
 
 	@SuppressWarnings("unused")

@@ -21,7 +21,7 @@ public class Gondolf {
 		 this.alto = 30;
 	 }
 	// Metodo para mover al mago al presionar teclas "WASD" o flechas
-	public void mover(Entorno entorno) {
+	public void mover(Entorno entorno, Roca[] rocas) {
 		double nuevoX = x;
 	    double nuevoY = y;
 	    if (entorno.estaPresionada('W') || entorno.estaPresionada(entorno.TECLA_ARRIBA)) {
@@ -36,13 +36,35 @@ public class Gondolf {
 	    if (entorno.estaPresionada('D') || entorno.estaPresionada(entorno.TECLA_DERECHA)) {
 	        nuevoX += velocidad;
 	    }
-		// Limites: no se sale de la pantalla ni entra al menú
-	    if (nuevoX - ancho / 2 >= 0 && nuevoX + ancho / 2 <= 600) {
-	        x = nuevoX;
-	    }
-	    if (nuevoY - alto / 2 >= 0 && nuevoY + alto / 2 <= 600) {
-	        y = nuevoY;
-	    }
+	    
+	    // Verifica que no se salga de los límites (zona jugable de 600x600)
+        boolean dentroDePantalla = nuevoX - ancho / 2 >= 0 &&
+                                   nuevoX + ancho / 2 <= 600 &&
+                                   nuevoY - alto / 2 >= 0 &&
+                                   nuevoY + alto / 2 <= 600;
+                                   
+	    if (dentroDePantalla) {
+            // Creamos un "Gondolf simulado" en la nueva posición
+            Gondolf simulado = new Gondolf(nuevoX, nuevoY, magia, vida);
+            simulado.magoSimulado(ancho, alto); // copiamos tamaño
+
+            // Verificamos si colisionaría con alguna roca
+            boolean colisiona = false;
+            for (int i = 0; i < rocas.length; i++) {
+                Roca r = rocas[i];
+                if (r != null && r.colisionaCon(simulado)) {
+                    colisiona = true;
+                    break;
+                }
+            }
+
+            // Solo actualiza la posición si no colisiona
+            if (!colisiona) {
+                this.x = nuevoX;
+                this.y = nuevoY;
+            }
+        }
+	    
 	}
 	// Metodo para dibujar al mago, de manera provisoria se dibuja un cirulo rojo
 	public void dibujar(Entorno entorno) {
@@ -69,6 +91,13 @@ public class Gondolf {
 	public void incrementaMagia(int cantidad) {
 		magia += cantidad;
 	}
+	
+	// Crear mago simulado para verificar colision con rocas
+	public void magoSimulado(double ancho, double alto) {
+	    this.ancho = ancho;
+	    this.alto = alto;
+	}
+	
 	// Getters
     public double getX() { return x; }
     public double getY() { return y; }
