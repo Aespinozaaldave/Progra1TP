@@ -64,13 +64,13 @@ public class Juego extends InterfaceJuego
 	// Variable de mago
 	int magiaInicial = 100;
 	int vidaInicial = 100;
-	Gondolf mago = new Gondolf(anchoPantalla/2,altoPantalla/2, magiaInicial, vidaInicial); // Se crea el objeto mago con posicion definida en el centro
+	Gondolf mago = new Gondolf(anchoPantalla/2-100,altoPantalla/2, magiaInicial, vidaInicial); // Se crea el objeto mago con posicion definida en el centro
 	
 	// Variables de menu
 	Menu menu = new Menu(600, 200, altoPantalla);
 	private int enemigosEliminados = 0;
 	
-	
+
 	Juego()
 	{
 		// Inicializa el objeto entorno
@@ -103,11 +103,11 @@ public class Juego extends InterfaceJuego
 		// ...
 		
 		// Dibuja el fondo antes de los elementos del juego
-		//entorno.dibujarImagen(fondo, entorno.ancho() / 2, entorno.alto() / 2, 0, 1.0);
+				//entorno.dibujarImagen(fondo, entorno.ancho() / 2, entorno.alto() / 2, 0, 1.0);
 
-		// Dibujar el fondo
-	    entorno.dibujarImagen(fondo, entorno.ancho()/3, entorno.alto()/5,0); // Asegúrate de ajustar la posición y rotación si es necesario
-	    
+				// Dibujar el fondo
+			    entorno.dibujarImagen(fondo, entorno.ancho()/3, entorno.alto()/5,0); // Asegúrate de ajustar la posición y rotación si es necesario
+				
 		// Verifica el tiempo en milisegundos por cada tick
 		int tiempoActual = entorno.tiempo();
 				
@@ -185,9 +185,9 @@ public class Juego extends InterfaceJuego
 					                        entorno.mouseY(),
 					                        entorno.mouseX(),
 					                        entorno.mouseY(),
-					                        40, // radio del hechizo (Personalizable)
+					                        35, // radio del hechizo (Personalizable)
 					                        boton.getCostoMagia(),
-					                        Color.MAGENTA,
+					                        Color.RED,
 					                        entorno.tiempo(),
 					                        400 // Duracion del hechizo (Personalizable)
 					                    	);
@@ -200,7 +200,7 @@ public class Juego extends InterfaceJuego
 					                        entorno.mouseY(),
 					                        60, // radio del hechizo (Personalizable)
 					                        boton.getCostoMagia(),
-					                        Color.DARK_GRAY,
+					                        Color.BLACK,
 					                        entorno.tiempo(),
 					                        300 // Duracion del hechizo (Personalizable)
 					                    	);
