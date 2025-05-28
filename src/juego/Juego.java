@@ -1,8 +1,9 @@
 package juego;
 
-
+import entorno.Herramientas;
 
 import java.awt.Color;
+import java.awt.Image;
 
 import entorno.Entorno;
 import entorno.InterfaceJuego;
@@ -11,6 +12,7 @@ public class Juego extends InterfaceJuego
 {
 	// El objeto Entorno que controla el tiempo y otros
 	private Entorno entorno;
+	private Image fondo;
 	
 	// Variables y métodos propios de cada grupo
 	// ...
@@ -74,6 +76,9 @@ public class Juego extends InterfaceJuego
 		// Inicializa el objeto entorno
 		this.entorno = new Entorno(this, "El camino de Gondolf - Grupo 7 - v1", anchoPantalla, altoPantalla);
 		
+		// Cargar la imagen del fondo
+		this.fondo = Herramientas.cargarImagen("imagenes/fondo.png");
+		
 		// Inicializar lo que haga falta para el juego
 		// ...
 		// Creamos algunas rocas con posiciones y tamaños fijos
@@ -96,6 +101,13 @@ public class Juego extends InterfaceJuego
 	{
 		// Procesamiento de un instante de tiempo
 		// ...
+		
+		// Dibuja el fondo antes de los elementos del juego
+		//entorno.dibujarImagen(fondo, entorno.ancho() / 2, entorno.alto() / 2, 0, 1.0);
+
+		// Dibujar el fondo
+	    entorno.dibujarImagen(fondo, entorno.ancho()/3, entorno.alto()/5,0); // Asegúrate de ajustar la posición y rotación si es necesario
+	    
 		// Verifica el tiempo en milisegundos por cada tick
 		int tiempoActual = entorno.tiempo();
 				
