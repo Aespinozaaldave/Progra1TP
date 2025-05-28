@@ -1,24 +1,30 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
+
 import entorno.Entorno;
+import entorno.Herramientas;
 
 public class Roca {
     private double x;
     private double y;
     private double ancho;
     private double alto;
+    private Image Rocas;
 
     public Roca(double x, double y) {
         this.x = x;
         this.y = y;
         this.ancho = 30;
         this.alto = 50;
+        this.Rocas = Herramientas.cargarImagen("Imagenes/piedras.png");
     }
 
     // Dibuja la roca en pantalla
     public void dibujar(Entorno entorno) {
-        entorno.dibujarRectangulo(x, y, ancho, alto, 0, Color.GRAY);
+    	entorno.dibujarImagen(Rocas, x, y, 0, 0.1);
+    	//entorno.dibujarRectangulo(x, y, ancho, alto, 0, Color.GRAY);
     }
 
     // Verifica si Gondolf choca con esta roca
