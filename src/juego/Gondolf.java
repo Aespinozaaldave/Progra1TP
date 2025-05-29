@@ -1,5 +1,7 @@
 package juego;
-import java.awt.Color; //Se importa de forma provisoria para dibujar el circulo que representa al mago
+
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import entorno.Entorno;
 
 public class Gondolf {
@@ -10,17 +12,23 @@ public class Gondolf {
 	private int vida;
 	private double ancho;
 	private double alto;
-	
+
+	private Image imagenGondolf; // Imagen del mago
+
 	public Gondolf(double xInicial, double yInicial, int magiaInicial, int vidaInicial) {
-		 this.x = xInicial;
-		 this.y = yInicial;
-		 this.velocidad = 5.0;
-		 this.magia = magiaInicial;
-		 this.vida = vidaInicial;
-		 this.ancho = 16;
-		 this.alto = 30;
-	 }
-	// Metodo para mover al mago al presionar teclas "WASD" o flechas
+		this.x = xInicial;
+		this.y = yInicial;
+		this.velocidad = 5.0;
+		this.magia = magiaInicial;
+		this.vida = vidaInicial;
+		this.ancho = 16;
+		this.alto = 30;
+		this.imagenGondolf = new ImageIcon("src/imagenes/gondolf.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+
+		
+
+	}
+
 	public void mover(Entorno entorno, Roca[] rocas) {
 		double nuevoX = x;
 	    double nuevoY = y;
@@ -36,19 +44,16 @@ public class Gondolf {
 	    if (entorno.estaPresionada('D') || entorno.estaPresionada(entorno.TECLA_DERECHA)) {
 	        nuevoX += velocidad;
 	    }
-	    
-	    // Verifica que no se salga de los límites (zona jugable de 600x600)
+
         boolean dentroDePantalla = nuevoX - ancho / 2 >= 0 &&
                                    nuevoX + ancho / 2 <= 600 &&
                                    nuevoY - alto / 2 >= 0 &&
                                    nuevoY + alto / 2 <= 600;
-                                   
-	    if (dentroDePantalla) {
-            // Creamos un "Gondolf simulado" en la nueva posición
-            Gondolf simulado = new Gondolf(nuevoX, nuevoY, magia, vida);
-            simulado.magoSimulado(ancho, alto); // copiamos tamaño
 
-            // Verificamos si colisionaría con alguna roca
+	    if (dentroDePantalla) {
+            Gondolf simulado = new Gondolf(nuevoX, nuevoY, magia, vida);
+            simulado.magoSimulado(ancho, alto);
+
             boolean colisiona = false;
             for (int i = 0; i < rocas.length; i++) {
                 Roca r = rocas[i];
@@ -58,46 +63,43 @@ public class Gondolf {
                 }
             }
 
-            // Solo actualiza la posición si no colisiona
             if (!colisiona) {
                 this.x = nuevoX;
                 this.y = nuevoY;
             }
         }
-	    
 	}
-	// Metodo para dibujar al mago, de manera provisoria se dibuja un cirulo rojo
+
 	public void dibujar(Entorno entorno) {
-		entorno.dibujarRectangulo(x, y, ancho,alto,0, Color.red);
+		entorno.dibujarImagen(imagenGondolf, x, y, 0); // Dibuja imagen en lugar del rectángulo
 	}
-	// Metodo para recibir daño
+
 	public void recibirDanio(int cantidad) {
 		vida -= cantidad;
 		if (vida < 0) {
 			vida = 0;
 		}
 	}
-	// Verifica que el mago tenga la cantidad suficiente de magia para lanzar un hechizo
+
 	public boolean tieneMagiaSuficiente(int costo) {
         return magia >= costo;
     }
-	// Lanza hechizo
+
 	public void lanzarHechizo (int cantidad) {
 		if (tieneMagiaSuficiente(cantidad)) {
 			magia -= cantidad;
 		}
 	}
-	// Incrementa magia
+
 	public void incrementaMagia(int cantidad) {
 		magia += cantidad;
 	}
-	
-	// Crear mago simulado para verificar colision con rocas
+
 	public void magoSimulado(double ancho, double alto) {
 	    this.ancho = ancho;
 	    this.alto = alto;
 	}
-	
+
 	// Getters
     public double getX() { return x; }
     public double getY() { return y; }
@@ -105,5 +107,4 @@ public class Gondolf {
     public int getMagia() { return magia; }
     public double getAncho() { return ancho; }
     public double getAlto() { return alto; }
-
 }
