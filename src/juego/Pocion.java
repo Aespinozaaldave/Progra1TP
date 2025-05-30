@@ -18,8 +18,8 @@ public class Pocion {
     // Indica si la poción es visible en pantalla
     private boolean visible;
 
-    // Constante que define cuánto tiempo la poción permanece visible (3 segundos)
-    private final int DURACION_MS = 3000;
+    // Constante que define cuánto tiempo la poción permanece visible (6 segundos)
+    private final int DURACION_MS = 6000;
 
     // Radio de detección para saber si Gondolf tocó la poción
     private final int RADIO = 10;
@@ -66,7 +66,7 @@ public class Pocion {
         if (distancia < RADIO + 20) {
             int vida = gondolf.getVida();     // Vida actual de Gondolf
             int maxVida = 100;                // Vida máxima posible
-            int incremento = (int)(maxVida * 0.3); // 30% de vida máxima
+            int incremento = (int)(maxVida * 0.1); // 10% de vida máxima
 
             // Si Gondolf no tiene vida completa, le aumenta la vida
             if (vida < maxVida) {

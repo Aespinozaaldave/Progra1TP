@@ -26,6 +26,7 @@ public class Juego extends InterfaceJuego {
 	private int intervalo = 1000; // Intervalo mínimo entre apariciones de murciélagos (en ticks)
 
 	private Hechizo[] hechizos = new Hechizo[10]; // Hechizos activos
+	
 
 	private boolean juegoTerminado = false; // Estado del juego (ganado o perdido)
 	int anchoPantalla = 800;
@@ -139,6 +140,7 @@ public class Juego extends InterfaceJuego {
 			}
 
 			// Lanzamiento de hechizos con el mouse
+			String rutaImagen = ""; // Ruta de la imagen de hechizos
 			if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO) && !menu.mouseEstaEnMenu(entorno.mouseX())) {
 				int seleccionado = menu.getHechizoSeleccionado();
 				if (seleccionado != -1) {
@@ -148,23 +150,26 @@ public class Juego extends InterfaceJuego {
 							if (hechizos[i] == null) {
 								// Crea hechizo según el botón seleccionado
 								if (seleccionado == 0) {
+									rutaImagen = "src/imagenes/explosionn.png";
 									hechizos[i] = new Hechizo(
 											mago.getX(), mago.getY(),
 											entorno.mouseX(), entorno.mouseY(),
 											20, boton.getCostoMagia(), Color.CYAN,
-											entorno.tiempo(), 500);
+											entorno.tiempo(), 500, rutaImagen);
 								} else if (seleccionado == 1) {
+									rutaImagen = "src/imagenes/fuego2.png";
 									hechizos[i] = new Hechizo(
 											entorno.mouseX(), entorno.mouseY(),
 											entorno.mouseX(), entorno.mouseY(),
 											35, boton.getCostoMagia(), Color.RED,
-											entorno.tiempo(), 400);
+											entorno.tiempo(), 400, rutaImagen);
 								} else if (seleccionado == 2) {
+									rutaImagen = "src/imagenes/agujeroNegro.png";
 									hechizos[i] = new Hechizo(
 											entorno.mouseX(), entorno.mouseY(),
 											entorno.mouseX(), entorno.mouseY(),
 											60, boton.getCostoMagia(), Color.BLACK,
-											entorno.tiempo(), 300);
+											entorno.tiempo(), 300, rutaImagen);
 								}
 								mago.lanzarHechizo(boton.getCostoMagia());
 								menu.deseleccionar();
@@ -208,10 +213,12 @@ public class Juego extends InterfaceJuego {
 						if (m != null && m.getVivo() && h.afectaA(m)) {
 						    m.morir(); // Marca el murciélago como muerto
 
-						    // Genera una poción si está dentro de los límites visibles
-						    if (m.getX() >= 0 && m.getX() <= anchoPantalla &&
-						        m.getY() >= 0 && m.getY() <= altoPantalla) {
-						        pociones.add(new Pocion(m.getX(), m.getY(), entorno.tiempo()));
+						    // Genera una poción cada 5 enemigos eliminados si está dentro de los límites visibles
+						    if (enemigosEliminados % 5 == 0 && enemigosEliminados > 0) {
+						        if (m.getX() >= 0 && m.getX() <= anchoPantalla &&
+						            m.getY() >= 0 && m.getY() <= altoPantalla) {
+						            pociones.add(new Pocion(m.getX(), m.getY(), entorno.tiempo()));
+						        }
 						    }
 
 						    enemigos[j] = null;

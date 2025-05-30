@@ -44,7 +44,8 @@ public class Hechizo {
         int costoMagia,                          // Cuánto mana gasta
         Color color,                             // Color del hechizo
         int tickInicial,                         // Tiempo en que se creó
-        int duracion                             // Cuánto dura en pantalla
+        int duracion,                            // Cuánto dura en pantalla
+        String rutaImagen						// Ruta de la imagen a utilizar
     ) {
         // Inicializa variables básicas
         this.x = xInicial;
@@ -57,7 +58,7 @@ public class Hechizo {
         this.duracion = duracion;
 
         // Carga la imagen del hechizo y la escala al tamaño adecuado
-        this.imagenHechizo = new ImageIcon("src/imagenes/explosionn.png")
+        this.imagenHechizo = new ImageIcon(rutaImagen)
             .getImage()
             .getScaledInstance((int)(radio * 2), (int)(radio * 2), Image.SCALE_SMOOTH);
 
