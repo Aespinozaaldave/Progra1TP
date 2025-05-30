@@ -15,7 +15,16 @@ public class Juego extends InterfaceJuego {
 	private Entorno entorno; // Entorno gráfico del juego
 	private Image fondo; // Imagen de fondo
 
-	private Gondolf gondolf; // Personaje principal (no se usa directamente, se usa "mago")
+	// Enum que representa los distintos estados del juego
+	private enum EstadoJuego {
+	    MENU,     // Pantalla de inicio
+	    JUGANDO,  // El juego está activo
+	    TERMINADOGANADO,// El juego terminó (victoria)
+	    TERMINADODERROTA// El juego terminó (derrota)
+	}
+	// Estado actual del juego
+	private EstadoJuego estado = EstadoJuego.MENU;
+	
 	private List<Pocion> pociones; // Lista de pociones activas en el juego
 
 	private int totalGenerados = 0; // Cuántos murciélagos se han generado hasta ahora
@@ -28,7 +37,6 @@ public class Juego extends InterfaceJuego {
 	private Hechizo[] hechizos = new Hechizo[10]; // Hechizos activos
 	
 
-	private boolean juegoTerminado = false; // Estado del juego (ganado o perdido)
 	int anchoPantalla = 800;
 	int altoPantalla = 600;
 
@@ -96,24 +104,73 @@ public class Juego extends InterfaceJuego {
 	// Método principal que se ejecuta en cada "tick" del juego
 	public void tick() {
 		int tiempoActual = entorno.tiempo(); // Tiempo actual del entorno
-
 		// Dibuja el fondo centrado
 		entorno.dibujarImagen(fondo, entorno.ancho() / 2, entorno.alto() / 2, 0);
+		if (!(estado == EstadoJuego.JUGANDO)) {
+	        // Dibuja fondo
+	        //entorno.dibujarRectangulo(anchoPantalla / 2, altoPantalla / 2, anchoPantalla, altoPantalla, 0, Color.LIGHT_GRAY);
 
-		// Verifica condiciones de fin de juego
-		if (enemigosEliminados >= maxGenerados) {
-			juegoTerminado = true;
-			entorno.cambiarFont("Arial", 36, java.awt.Color.BLUE);
-			entorno.escribirTexto("¡Has ganado!", 300, 300);
-		}
-		if (mago.getVida() <= 0) {
-			juegoTerminado = true;
-			entorno.cambiarFont("Arial", 36, java.awt.Color.RED);
-			entorno.escribirTexto("¡Has perdido!", 300, 300);
-		}
+	        // Título del juego
+			if (estado == EstadoJuego.MENU) {
+				entorno.cambiarFont("Arial", 36, Color.BLACK);
+				entorno.escribirTexto("El camino de Gondolf", anchoPantalla / 2 - 180, 150);
+			}
+	        // Coordenadas de botones
+	        int botonJugarX = anchoPantalla / 2;
+	        int botonJugarY = 250;
+	        int botonSalirX = anchoPantalla / 2;
+	        int botonSalirY = 350;
+	        int anchoBoton = 200;
+	        int altoBoton = 60;
+	        
+	        if (estado == EstadoJuego.TERMINADOGANADO) {
+	        	entorno.cambiarFont("Arial", 36, Color.GREEN);
+		        entorno.escribirTexto("¡Has ganado!", anchoPantalla / 2 - 110, 150);
+	        }
+	        if (estado == EstadoJuego.TERMINADODERROTA) {
+	        	entorno.cambiarFont("Arial", 36, Color.RED);
+		        entorno.escribirTexto("¡Has perdido!", anchoPantalla / 2 - 110, 150);
+	        }
 
-		// Si el juego sigue en curso...
-		if (!juegoTerminado) {
+	        // Botón JUGAR
+	        entorno.dibujarRectangulo(botonJugarX, botonJugarY, anchoBoton, altoBoton, 0, Color.GREEN);
+	        entorno.cambiarFont("Arial", 24, Color.BLACK);
+	        entorno.escribirTexto("JUGAR", botonJugarX - 40, botonJugarY + 10);
+
+	        // Botón SALIR
+	        entorno.dibujarRectangulo(botonSalirX, botonSalirY, anchoBoton, altoBoton, 0, Color.RED);
+	        entorno.cambiarFont("Arial", 24, Color.BLACK);
+	        entorno.escribirTexto("SALIR", botonSalirX - 35, botonSalirY + 10);
+
+	        // Detectar clics del mouse
+	        if (entorno.sePresionoBoton(entorno.BOTON_IZQUIERDO)) {
+	            int mouseX = entorno.mouseX();
+	            int mouseY = entorno.mouseY();
+
+	            // Si se hizo clic en "Jugar"
+	            if (mouseX >= botonJugarX - anchoBoton / 2 && mouseX <= botonJugarX + anchoBoton / 2 &&
+	                mouseY >= botonJugarY - altoBoton / 2 && mouseY <= botonJugarY + altoBoton / 2) {
+	                estado = EstadoJuego.JUGANDO; // Cambia a estado de juego
+	            }
+
+	            // Si se hizo clic en "Salir"
+	            if (mouseX >= botonSalirX - anchoBoton / 2 && mouseX <= botonSalirX + anchoBoton / 2 &&
+	                mouseY >= botonSalirY - altoBoton / 2 && mouseY <= botonSalirY + altoBoton / 2) {
+	                System.exit(0); // Cierra el programa
+	            }
+	        }
+
+	        return; // No ejecuta más del tick si está en el menú
+	    }
+		if (estado == EstadoJuego.JUGANDO) {
+			// Verifica condiciones de fin de juego
+			if (enemigosEliminados >= maxGenerados) {
+				estado = EstadoJuego.TERMINADOGANADO;
+			}
+			if (mago.getVida() <= 0) {
+				estado = EstadoJuego.TERMINADODERROTA;
+			}
+
 			menu.actualizarSeleccion(entorno); // Verifica selección de hechizo
 			menu.dibujar(entorno, mago.getVida(), mago.getMagia(), enemigosEliminados);
 			mago.dibujar(entorno); // Dibuja al personaje principal
@@ -151,25 +208,19 @@ public class Juego extends InterfaceJuego {
 								// Crea hechizo según el botón seleccionado
 								if (seleccionado == 0) {
 									rutaImagen = "src/imagenes/explosionn.png";
-									hechizos[i] = new Hechizo(
-											mago.getX(), mago.getY(),
-											entorno.mouseX(), entorno.mouseY(),
-											20, boton.getCostoMagia(), Color.CYAN,
-											entorno.tiempo(), 500, rutaImagen);
+									hechizos[i] = new Hechizo(mago.getX(), mago.getY(), entorno.mouseX(),
+											entorno.mouseY(), 20, boton.getCostoMagia(), Color.CYAN, entorno.tiempo(),
+											500, rutaImagen);
 								} else if (seleccionado == 1) {
 									rutaImagen = "src/imagenes/fuego2.png";
-									hechizos[i] = new Hechizo(
-											entorno.mouseX(), entorno.mouseY(),
-											entorno.mouseX(), entorno.mouseY(),
-											35, boton.getCostoMagia(), Color.RED,
-											entorno.tiempo(), 400, rutaImagen);
+									hechizos[i] = new Hechizo(entorno.mouseX(), entorno.mouseY(), entorno.mouseX(),
+											entorno.mouseY(), 35, boton.getCostoMagia(), Color.RED, entorno.tiempo(),
+											400, rutaImagen);
 								} else if (seleccionado == 2) {
 									rutaImagen = "src/imagenes/agujeroNegro.png";
-									hechizos[i] = new Hechizo(
-											entorno.mouseX(), entorno.mouseY(),
-											entorno.mouseX(), entorno.mouseY(),
-											60, boton.getCostoMagia(), Color.BLACK,
-											entorno.tiempo(), 300, rutaImagen);
+									hechizos[i] = new Hechizo(entorno.mouseX(), entorno.mouseY(), entorno.mouseX(),
+											entorno.mouseY(), 60, boton.getCostoMagia(), Color.BLACK, entorno.tiempo(),
+											300, rutaImagen);
 								}
 								mago.lanzarHechizo(boton.getCostoMagia());
 								menu.deseleccionar();
@@ -211,23 +262,24 @@ public class Juego extends InterfaceJuego {
 					for (int j = 0; j < enemigos.length; j++) {
 						Murcielago m = enemigos[j];
 						if (m != null && m.getVivo() && h.afectaA(m)) {
-						    m.morir(); // Marca el murciélago como muerto
+							m.morir(); // Marca el murciélago como muerto
 
-						    // Genera una poción cada 5 enemigos eliminados si está dentro de los límites visibles
-						    if (enemigosEliminados % 5 == 0 && enemigosEliminados > 0) {
-						        if (m.getX() >= 0 && m.getX() <= anchoPantalla &&
-						            m.getY() >= 0 && m.getY() <= altoPantalla) {
-						            pociones.add(new Pocion(m.getX(), m.getY(), entorno.tiempo()));
-						        }
-						    }
+							// Genera una poción cada 5 enemigos eliminados si está dentro de los límites
+							// visibles
+							if (enemigosEliminados % 5 == 0 && enemigosEliminados > 0) {
+								if (m.getX() >= 0 && m.getX() <= anchoPantalla && m.getY() >= 0
+										&& m.getY() <= altoPantalla) {
+									pociones.add(new Pocion(m.getX(), m.getY(), entorno.tiempo()));
+								}
+							}
 
-						    enemigos[j] = null;
-						    enemigosEliminados++;
+							enemigos[j] = null;
+							enemigosEliminados++;
 
-						    // Recupera un poco de magia
-						    if (mago.getMagia() < magiaInicial) {
-						        mago.incrementaMagia((int) (magiaInicial * 0.1));
-						    }
+							// Recupera un poco de magia
+							if (mago.getMagia() < magiaInicial) {
+								mago.incrementaMagia((int) (magiaInicial * 0.1));
+							}
 						}
 					}
 
@@ -247,7 +299,9 @@ public class Juego extends InterfaceJuego {
 					it.remove(); // Elimina la poción si ya fue usada o expiró
 				}
 			}
+			
 		}
+		
 	}
 
 	// Método principal para iniciar el juego
