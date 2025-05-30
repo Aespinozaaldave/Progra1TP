@@ -24,7 +24,7 @@ public class Roca {
     // Dibuja la roca en pantalla
     public void dibujar(Entorno entorno) {
     	entorno.dibujarImagen(Rocas, x, y, 0, 0.1);
-    	//entorno.dibujarRectangulo(x, y, ancho, alto, 0, Color.GRAY);
+    	
     }
 
     // Verifica si Gondolf choca con esta roca
