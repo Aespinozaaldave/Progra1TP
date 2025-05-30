@@ -22,6 +22,40 @@ public class Juego extends InterfaceJuego {
 	    TERMINADOGANADO,// El juego terminó (victoria)
 	    TERMINADODERROTA// El juego terminó (derrota)
 	}
+	
+	// Permite volver todos los valores nuevamente a su inicio
+	private void reiniciarJuego() {
+	    // Reinicia el estado del juego
+	    estado = EstadoJuego.JUGANDO;
+
+	    // Reinicia al mago
+	    mago = new Gondolf(anchoPantalla / 2 - 100, altoPantalla / 2, magiaInicial, vidaInicial);
+
+	    // Reinicia enemigos
+	    enemigos = new Murcielago[10];
+	    totalGenerados = 0;
+	    tiempoUltimoMurcielago = 0;
+
+	    // Reinicia hechizos
+	    hechizos = new Hechizo[10];
+
+	    // Reinicia pociones
+	    pociones.clear();
+
+	    // Reinicia contador de enemigos eliminados
+	    enemigosEliminados = 0;
+
+	    // Reinicia menú
+	    menu.deseleccionar();
+
+	    // (Opcional) Si querés reiniciar la posición de las rocas:
+	    rocas[0] = new Roca(200, 300);
+	    rocas[1] = new Roca(400, 150);
+	    rocas[2] = new Roca(300, 500);
+	    rocas[3] = new Roca(100, 200);
+	    rocas[4] = new Roca(500, 300);
+	}
+
 	// Estado actual del juego
 	private EstadoJuego estado = EstadoJuego.MENU;
 	
@@ -123,6 +157,8 @@ public class Juego extends InterfaceJuego {
 	        int anchoBoton = 200;
 	        int altoBoton = 60;
 	        
+	        
+	        //Textos dependiendo si se gano o perdio el juego
 	        if (estado == EstadoJuego.TERMINADOGANADO) {
 	        	entorno.cambiarFont("Arial", 36, Color.GREEN);
 		        entorno.escribirTexto("¡Has ganado!", anchoPantalla / 2 - 110, 150);
@@ -150,7 +186,7 @@ public class Juego extends InterfaceJuego {
 	            // Si se hizo clic en "Jugar"
 	            if (mouseX >= botonJugarX - anchoBoton / 2 && mouseX <= botonJugarX + anchoBoton / 2 &&
 	                mouseY >= botonJugarY - altoBoton / 2 && mouseY <= botonJugarY + altoBoton / 2) {
-	                estado = EstadoJuego.JUGANDO; // Cambia a estado de juego
+	                reiniciarJuego();
 	            }
 
 	            // Si se hizo clic en "Salir"
@@ -158,6 +194,7 @@ public class Juego extends InterfaceJuego {
 	                mouseY >= botonSalirY - altoBoton / 2 && mouseY <= botonSalirY + altoBoton / 2) {
 	                System.exit(0); // Cierra el programa
 	            }
+	            
 	        }
 
 	        return; // No ejecuta más del tick si está en el menú
@@ -230,7 +267,7 @@ public class Juego extends InterfaceJuego {
 					}
 				}
 			}
-
+			
 			// Lógica de enemigos (murciélagos)
 			for (int i = 0; i < enemigos.length; i++) {
 				Murcielago m = enemigos[i];
