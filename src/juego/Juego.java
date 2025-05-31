@@ -212,6 +212,7 @@ public class Juego extends InterfaceJuego {
 			menu.dibujar(entorno, mago.getVida(), mago.getMagia(), enemigosEliminados);
 			mago.dibujar(entorno); // Dibuja al personaje principal
 			mago.mover(entorno, rocas); // Permite movimiento, evitando rocas
+			double velocidad = velocidadMurcielagos + 0.5 * (enemigosEliminados / 15); // Se incremetna la velocidad 0.5 cada 15 enemigos eliminados
 
 			// Dibuja todas las rocas
 			for (int i = 0; i < rocas.length; i++) {
@@ -225,9 +226,10 @@ public class Juego extends InterfaceJuego {
 				for (int i = 0; i < enemigos.length; i++) {
 					if (enemigos[i] == null) {
 						double[] pos = generarPosicionAleatoriaFueraDePantalla();
-						enemigos[i] = new Murcielago(pos[0], pos[1], velocidadMurcielagos);
+						enemigos[i] = new Murcielago(pos[0], pos[1], velocidad);
 						tiempoUltimoMurcielago = tiempoActual;
 						totalGenerados++;
+						
 						break;
 					}
 				}
